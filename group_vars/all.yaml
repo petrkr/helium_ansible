@@ -27,14 +27,5 @@ enable_workarounds: False
 enable_spi: True
 enable_i2c: True
 enable_serial_hw: True
-enable_onewire: False
-enable_rgpio: False
-#Docker
-docker_convenience_install: True
-docker_version: "latest"
-docker_install_recommends: true
-docker_install_compose: true
-docker_users: [pi]
-docker_pip_executable: pip3
 # Aliases
 enable_miner_aliases: False
