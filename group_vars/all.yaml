@@ -7,23 +7,7 @@ seed_peer: "/p2p/11hVUgp5hMrZhCKcbamRUL1RnDxbEdpDVytSZsiGSkjRJxbujwa"
 enable_packet_forwarder: True
 target_pf_image: "heliumdiy/sx1302_hal"
 target_pf_tag: "0.0.13"
-# Helium Workarounds
-workarounds_log_only_failed: True
-#Loki & Prometheus
-enable_node_exporter: False
-enable_grafana_agent: False
-enable_json_exporter: False
-target_json_exporter_sha256: e27a2fbbcf6c8cb3ca52e0b19d630edebbc1f956660ca1cd540b4e9690b430fa ## Arm64
-target_loki_server: "http://1.2.3.4:3100/loki/api/v1/push" # Needed by the Grafana Agent to Ship Logs to Loki
-prometheus_remote_write_endpoint: "" # Needed by the Grafana Agent to Ship Metrics to Prometheus
-prometheus_remote_write_username: "" # Needed by the Grafana Agent to Ship Metrics to Prometheus
-prometheus_remote_write_password: "" # Needed by the Grafana Agent to Ship Metrics to Prometheus
-enable_cadvisor: False
-enable_docker_daemon_metrics: False
-docker_daemon_metrics_port: 9323
 # Raspberry Pi Configuration
 enable_spi: True
 enable_i2c: True
 enable_serial_hw: True
-# Aliases
-enable_miner_aliases: False

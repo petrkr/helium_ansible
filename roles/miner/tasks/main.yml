@@ -1,18 +1,6 @@
 - name: Miner
   import_tasks: miner.yml
 
-- name: Grafana Agent
-  import_tasks: grafana-agent.yml
-  when: enable_grafana_agent == True
-
-- name: JSON Exporter
-  import_tasks: json-exporter.yml
-  when: enable_json_exporter == True
-
-- name: Miner Aliases
-  import_tasks: miner-aliases.yml
-  when: enable_miner_aliases == True
-
 - name: Podman
   import_tasks: podman.yml
 
