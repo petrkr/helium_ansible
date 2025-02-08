@@ -1,3 +1,0 @@
-    - name: Securing SSH
-      include_role:
-        name: vitalk.secure-ssh
