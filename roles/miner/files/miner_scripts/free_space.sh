@@ -5,10 +5,10 @@ USED_PCT=$(df --output='pcent' -l / |awk '/^ ?[0-9]+\%/ {split($1,a,"%"); print 
 LIMIT=90
 
 if [ "${USED_PCT}" -ge "${LIMIT}" ] ; then
-        docker image prune -fa
-        docker stop miner
+        podman image prune -fa
+        podman stop miner
         rm -rf ${DATA_DIR}/log ${DATA_DIR}/blockchain.db
-        docker start miner
+        podman start miner
         sleep 5m
         /home/pi/miner_scripts/fastsync.sh
 fi
