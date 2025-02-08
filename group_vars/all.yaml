@@ -21,8 +21,6 @@ prometheus_remote_write_password: "" # Needed by the Grafana Agent to Ship Metri
 enable_cadvisor: False
 enable_docker_daemon_metrics: False
 docker_daemon_metrics_port: 9323
-# Workarounds
-enable_workarounds: False
 # Raspberry Pi Configuration
 enable_spi: True
 enable_i2c: True
