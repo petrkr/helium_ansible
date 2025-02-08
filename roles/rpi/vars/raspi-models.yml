@@ -238,3 +238,8 @@ raspi_models:
     pcb_rev: "1.4"
     mem: "8 GB"
     notes: "(Mfg by Sony)"
+  c04170:
+    model: "5"
+    pcb_rev: "1"
+    mem: "4 GB"
+    notes: "(Mfg by Sony)"
