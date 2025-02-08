@@ -20,9 +20,6 @@
   import_tasks: miner-aliases.yml
   when: enable_miner_aliases == True
 
-- name: VPN Client
-  import_tasks: vpn.yml
-
 - name: Docker
   import_tasks: docker.yml
 
