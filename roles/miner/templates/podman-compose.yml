@@ -30,10 +30,6 @@ services:
 {% endif %}
     privileged: true
     restart: unless-stopped  
-    logging:
-      driver: json-file
-      options:
-        tag: "{{ '{{' }}.ImageName{{ '}}' }}|{{ '{{' }}.Name{{ '}}' }}|{{ '{{' }}.ImageFullID{{ '}}' }}|{{ '{{' }}.FullID{{ '}}' }}"
 {% endif %}
 {% if enable_miner %}
 
@@ -72,10 +68,6 @@ services:
         soft: 64000
         hard: 64000
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        tag: "{{ '{{' }}.ImageName{{ '}}' }}|{{ '{{' }}.Name{{ '}}' }}|{{ '{{' }}.ImageFullID{{ '}}' }}|{{ '{{' }}.FullID{{ '}}' }}"
 {% endif %}
 {% if use_host_networking is defined and use_host_networking == True %}
 {% else %}
