@@ -13,7 +13,7 @@
     owner: pi
   register: pf_config
 
-- name: docker restart packet-forwarder
-  shell: docker restart pf
+- name: podman restart packet-forwarder
+  shell: podman restart pf
   ignore_errors: yes
   when: pf_config.changed
