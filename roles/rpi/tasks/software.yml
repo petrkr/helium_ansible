@@ -10,11 +10,10 @@
     state: present
   vars:
     packages:
-      - wireguard
-      - neovim
+      - ca-certificates
+      - vim
       - locales-all
       - neofetch
-      - python3-pip
       - jq # JSON cli processor for Height Helper
       - bc # Basic Calculator for Height Helper
       - bat
