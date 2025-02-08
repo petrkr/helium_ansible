@@ -22,8 +22,8 @@
     mode: 0644
   register: miner_config
 
-- name: docker restart miner
-  shell: docker restart miner
+- name: podman restart miner
+  shell: podman restart miner
   ignore_errors: yes
   when: miner_config.changed
 

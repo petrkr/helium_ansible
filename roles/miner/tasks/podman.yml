@@ -1,0 +1,24 @@
+---
+- name: template out /home/pi/podman-compose.yml
+  template:
+    src: podman-compose.yml
+    dest: /home/pi/podman-compose.yml
+    owner: pi
+    group: pi
+    mode: 0644
+  register: podman_compose
+
+- name: podman-compose up
+  shell: podman-compose -f /home/pi/podman-compose.yml up -d --remove-orphans
+  when: podman_compose.changed
+
+- name: cron job to update miner
+  ansible.builtin.cron:
+    name: "update miner"
+    minute: "*/30"
+    job: "podman-compose -f /home/pi/podman-compose.yml pull miner && podman-compose -f /home/pi/podman-compose.yml ps -q miner && podman-compose -f /home/pi/podman-compose.yml up -d miner"
+- name: cron job to update helium_workarounds
+  ansible.builtin.cron:
+    name: "update workarounds"
+    minute: "*/30"
+    job: "podman-compose -f /home/pi/podman-compose.yml pull helium_workarounds && podman-compose -f /home/pi/podman-compose.yml ps -q helium_workarounds && podman-compose -f /home/pi/podman-compose.yml up -d helium_workarounds"

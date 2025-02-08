@@ -9,16 +9,12 @@
   import_tasks: json-exporter.yml
   when: enable_json_exporter == True
 
-- name: Docker Daemon Metrics
-  import_tasks: docker-metrics.yml
-  when: enable_docker_daemon_metrics == True
-
 - name: Miner Aliases
   import_tasks: miner-aliases.yml
   when: enable_miner_aliases == True
 
-- name: Docker
-  import_tasks: docker.yml
+- name: Podman
+  import_tasks: podman.yml
 
 - name: Packet Forwarder
   import_tasks: packet-forwarder.yml
