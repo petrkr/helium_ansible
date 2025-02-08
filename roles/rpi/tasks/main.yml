@@ -1,7 +1,7 @@
 ---
-- include: raspi-facts.yml
-- include: linux-facts.yml
-- include: software.yml
+- import_tasks: raspi-facts.yml
+- import_tasks: linux-facts.yml
+- import_tasks: software.yml
 
 - name: "set timezone"
   command: "timedatectl set-timezone {{ timezone }}"
@@ -15,4 +15,4 @@
   command: "raspi-config nonint do_wifi_country {{ wifi_country }}"
   when: "wifi_country | default(false) and wifi_country != raspi_wifi_country"
 
-- include: raspi-config.yml
+- import_tasks: raspi-config.yml
