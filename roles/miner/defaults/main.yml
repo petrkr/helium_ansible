@@ -1,8 +1,6 @@
 ---
 #Miner
 target_miner_tag: "gateway-latest"
-
-target_miner_key: True # use ECC key
 target_pf_concentrator_interface: "spi" # or usb
 target_pf_concentrator_model: "sx1250" # only sx1250 for now
 
