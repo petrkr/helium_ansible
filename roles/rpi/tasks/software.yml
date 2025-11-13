@@ -13,11 +13,11 @@
       - ca-certificates
       - vim
       - locales-all
-      - neofetch
       - jq # JSON cli processor for Height Helper
       - bc # Basic Calculator for Height Helper
       - bat
       - i2c-tools
+      - mc
 
 - name: Install container engine
   apt:
