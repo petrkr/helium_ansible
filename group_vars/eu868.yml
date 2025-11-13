@@ -1,8 +1,0 @@
----
-#Miner Region Overrides
-target_miner_region: "EU868" #EU868
-# Locales & Timezone
-timezone: "Europe/Lisbon"
-locale: "en_US.UTF-8"
-xkblayout: "pt"
-wifi_country: "PT"
