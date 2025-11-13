@@ -1,12 +1,4 @@
 ---
-- name: create miner_data directory
-  file:
-    path: /home/pi/miner_data
-    state: directory
-    owner: pi
-    group: pi
-    mode: 0755
-
 - name: create miner_config directory
   file:
     path: /home/pi/miner_config
