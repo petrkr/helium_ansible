@@ -1,8 +1,6 @@
 ---
 version: "2.1"
 services:
-{% if enable_packet_forwarder %}
-
   packet_forwarder:
     image: {{ target_pf_image }}:{{ target_pf_tag }}
     container_name: pf
@@ -30,8 +28,6 @@ services:
 {% endif %}
     privileged: true
     restart: unless-stopped  
-{% endif %}
-{% if enable_miner %}
 
   miner:
     image: quay.io/team-helium/miner:{{ target_miner_tag }}
@@ -67,7 +63,7 @@ services:
         soft: 64000
         hard: 64000
     restart: unless-stopped
-{% endif %}
+
 {% if use_host_networking is defined and use_host_networking == True %}
 {% else %}
 networks:
