@@ -48,8 +48,6 @@ services:
       - "1680:1680/udp"
       - "4467:4467/tcp"
 {% endif %}
-    volumes:
-      - /home/pi/miner_config/sys.config:/config/sys.config
     cap_add:
       - SYS_RAWIO
     devices:

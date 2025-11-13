@@ -1,29 +1,4 @@
 ---
-- name: create miner_config directory
-  file:
-    path: /home/pi/miner_config
-    state: directory
-    mode: 0755
-
-- name: template miner configuration file
-  template:
-    src: miner/sys.config
-    dest: /home/pi/miner_config/sys.config
-    owner: pi
-    group: pi
-    mode: 0644
-  register: miner_config
-
-- name: podman restart miner
-  shell: podman restart miner
-  ignore_errors: yes
-  when: miner_config.changed
-
-- name: cron job to peer with seed node
-  ansible.builtin.cron:
-    name: "miner peer connect"
-    job: curl -s -d '{"jsonrpc":"2.0","id":"id","method":"peer_connect","params":{"addr":"{{ seed_peer }}"}}' http://localhost:4467/
-
 - name: create miner_scripts directory
   file:
     path: /home/pi/miner_scripts
