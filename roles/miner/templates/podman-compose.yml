@@ -16,10 +16,10 @@ services:
 {% endif %}
     volumes:
       - /home/pi/pf:/opt/packet_forwarder/configs
-      - /dev/gpiomem:/dev/gpiomem
     devices:
       - /dev/spidev0.0:/dev/spidev0.0
       - /dev/spidev0.1:/dev/spidev0.1
+      - /dev/gpiomem:/dev/gpiomem
     cap_add:
       - SYS_RAWIO
 {% if use_host_networking is defined and use_host_networking == True %}
@@ -53,7 +53,6 @@ services:
       - "4467:4467/tcp"
 {% endif %}
     volumes:
-      - /home/pi/miner_data:/var/data
       - /home/pi/miner_config/sys.config:/config/sys.config
     cap_add:
       - SYS_RAWIO
