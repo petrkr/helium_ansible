@@ -32,14 +32,6 @@
     group: pi
     mode: 0755
 
-- name: copy miner height helper script
-  copy:
-    src: miner_scripts/height-helper.sh
-    dest: /home/pi/miner_scripts/height-helper.sh
-    owner: pi
-    group: pi
-    mode: 0755
-
 - name: copy miner free space script
   copy:
     src: miner_scripts/free_space.sh
@@ -53,4 +45,3 @@
 #    minute: "*/15"
 #    name: "free space"
 #    job: /home/pi/miner_scripts/free_space.sh
-
