@@ -1,0 +1,9 @@
+---
+target_hotspot_vendor: "rakv1"
+
+#Miner Region Overrides
+target_miner_region: "EU868" #EU868
+
+# Locales & Timezone
+timezone: "Europe/Prague"
+wifi_country: "CZ"
