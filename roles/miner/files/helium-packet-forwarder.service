@@ -14,7 +14,6 @@ ExecStart=/usr/bin/podman run --rm --name pf \
   -e REGION=${REGION} \
   -e CONCENTRATOR_INTERFACE=${CONCENTRATOR_INTERFACE} \
   -e CONCENTRATOR_MODEL=${CONCENTRATOR_MODEL} \
-  -v /home/pi/pf:/opt/packet_forwarder/configs:Z \
   --device /dev/spidev0.0 \
   --device /dev/spidev0.1 \
   --device /dev/gpiomem \

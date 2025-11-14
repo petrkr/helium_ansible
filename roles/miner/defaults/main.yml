@@ -6,4 +6,4 @@ target_pf_concentrator_model: "sx1250" # only sx1250 for now
 
 #Packet Forwarder
 target_pf_image: "ghcr.io/petrkr/sx1302_hal"
-target_pf_tag: "0.0.14"
+target_pf_tag: "0.0.15"
