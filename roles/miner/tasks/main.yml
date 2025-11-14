@@ -1,8 +1,11 @@
+- name: Hosts configuration
+  import_tasks: hosts.yml
+
 - name: Miner
   import_tasks: miner.yml
 
-- name: Podman
-  import_tasks: podman.yml
+- name: Systemd services
+  import_tasks: systemd-services.yml
 
 - name: Packet Forwarder
   import_tasks: packet-forwarder.yml

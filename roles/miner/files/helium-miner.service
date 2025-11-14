@@ -1,0 +1,26 @@
+[Unit]
+Description=Helium Miner Gateway
+After=network-online.target helium-packet-forwarder.service
+Wants=network-online.target
+Requires=helium-packet-forwarder.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+LimitNOFILE=64000
+EnvironmentFile=/etc/default/helium-miner
+ExecStart=/usr/bin/podman run --rm --name miner \
+  --network=host \
+  -e REGION_OVERRIDE=${REGION_OVERRIDE} \
+  -e GW_REGION=${GW_REGION} \
+  -e GW_KEYPAIR=ecc://i2c-ecc \
+  -e GW_LISTEN=127.0.2.1:1680 \
+  -e GW_API=127.0.2.1:4467 \
+  --device ${DEVICE_I2C}:/dev/i2c-ecc \
+  --cap-add SYS_RAWIO \
+  ${IMAGE}
+ExecStop=/usr/bin/podman stop -t 10 miner
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,48 @@
+---
+- name: Deploy packet forwarder env file
+  template:
+    src: helium-packet-forwarder.env.j2
+    dest: /etc/default/helium-packet-forwarder
+    mode: 0644
+  notify: restart helium-packet-forwarder
+
+- name: Deploy miner env file
+  template:
+    src: helium-miner.env.j2
+    dest: /etc/default/helium-miner
+    mode: 0644
+  notify: restart helium-miner
+
+- name: Deploy packet forwarder systemd service
+  copy:
+    src: helium-packet-forwarder.service
+    dest: /etc/systemd/system/helium-packet-forwarder.service
+    mode: 0644
+  notify:
+    - daemon-reload
+    - restart helium-packet-forwarder
+
+- name: Deploy miner systemd service
+  copy:
+    src: helium-miner.service
+    dest: /lib/systemd/system/helium-miner.service
+    mode: 0644
+  notify:
+    - daemon-reload
+    - restart helium-miner
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start helium-packet-forwarder service
+  systemd:
+    name: helium-packet-forwarder
+    enabled: yes
+    state: started
+
+- name: Enable and start helium-miner service
+  systemd:
+    name: helium-miner
+    enabled: yes
+    state: started

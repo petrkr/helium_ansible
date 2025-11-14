@@ -13,7 +13,8 @@
     owner: pi
   register: pf_config
 
-- name: podman restart packet-forwarder
-  shell: podman restart pf
-  ignore_errors: yes
+- name: Restart packet-forwarder service
+  systemd:
+    name: helium-packet-forwarder
+    state: restarted
   when: pf_config.changed

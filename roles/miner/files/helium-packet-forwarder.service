@@ -1,0 +1,27 @@
+[Unit]
+Description=Helium Packet Forwarder
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+EnvironmentFile=/etc/default/helium-packet-forwarder
+ExecStart=/usr/bin/podman run --rm --name pf \
+  --network=host \
+  -e VENDOR=${VENDOR} \
+  -e REGION=${REGION} \
+  -e CONCENTRATOR_INTERFACE=${CONCENTRATOR_INTERFACE} \
+  -e CONCENTRATOR_MODEL=${CONCENTRATOR_MODEL} \
+  -v /home/pi/pf:/opt/packet_forwarder/configs:Z \
+  --device /dev/spidev0.0 \
+  --device /dev/spidev0.1 \
+  --device /dev/gpiomem \
+  --cap-add SYS_RAWIO \
+  --privileged \
+  ${IMAGE}
+ExecStop=/usr/bin/podman stop -t 10 pf
+
+[Install]
+WantedBy=multi-user.target
