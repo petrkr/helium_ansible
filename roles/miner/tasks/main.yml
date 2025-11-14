@@ -1,12 +1,5 @@
 - name: Hosts configuration
   import_tasks: hosts.yml
 
-- name: Miner
-  import_tasks: miner.yml
-
 - name: Systemd services
   import_tasks: systemd-services.yml
-
-- name: Packet Forwarder
-  import_tasks: packet-forwarder.yml
-  when: packet_forwarder_config_file_path is defined
