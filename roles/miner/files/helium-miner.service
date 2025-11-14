@@ -17,6 +17,7 @@ ExecStart=/usr/bin/podman run --rm --name miner \
   -e GW_KEYPAIR=ecc://i2c-ecc \
   -e GW_LISTEN=127.0.2.1:1680 \
   -e GW_API=127.0.2.1:4467 \
+  -e GW_LOG_TIMESTAMP=false \
   --device ${DEVICE_I2C}:/dev/i2c-ecc \
   --cap-add SYS_RAWIO \
   ${IMAGE}
