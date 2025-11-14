@@ -35,14 +35,16 @@
   systemd:
     daemon_reload: yes
 
-- name: Enable and start helium-packet-forwarder service
+- name: Enable helium-packet-forwarder service
   systemd:
     name: helium-packet-forwarder
     enabled: yes
-    state: started
+  notify:
+    - restart helium-packet-forwarder
 
-- name: Enable and start helium-miner service
+- name: Enable helium-miner service
   systemd:
     name: helium-miner
     enabled: yes
-    state: started
+  notify:
+    - restart helium-miner
