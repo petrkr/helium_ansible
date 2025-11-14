@@ -16,7 +16,7 @@
 - name: Deploy packet forwarder systemd service
   copy:
     src: helium-packet-forwarder.service
-    dest: /etc/systemd/system/helium-packet-forwarder.service
+    dest: /lib/systemd/system/helium-packet-forwarder.service
     mode: 0644
   notify:
     - daemon-reload
