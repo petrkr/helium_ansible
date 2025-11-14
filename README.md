@@ -2,16 +2,14 @@
 
 Ansible playbooks for managing Helium IoT hotspots using systemd services.
 
-## Architecture
+## What It Does
 
-This setup uses **systemd services** running **Podman containers** in host network mode:
+This setup deploys:
 
-- **helium-packet-forwarder** - Manages LoRa concentrator communication (UDP port 1680)
-- **helium-miner** - Gateway service with gRPC API (port 4467, bound to 127.0.2.1)
+- **helium-packet-forwarder** - LoRa concentrator communication service
+- **helium-miner** - Helium gateway service
 
-Configuration is stored in `/etc/default/` env files, making it easy to customize without modifying systemd units.
-
-**Note:** Services run as root (no `User=` directive in systemd units) to access hardware devices.
+Both run as Podman containers managed by systemd services.
 
 ## Requirements
 
@@ -47,99 +45,81 @@ ssh pi@<device-ip>
 
 ## Configuration
 
-### Ansible Inventory (hosts.yml)
+### Inventory
 
-Configure your target device in `hosts.yml`:
-```yaml
-all:
-  children:
-    eu868:  # Change to us915 for US region
-      hosts:
-        hotspot:
-          ansible_host: 192.168.0.12
-          ansible_user: pi
-          ansible_ssh_pass: raspberry
-          ansible_become: true
+Add your hotspots to `inventory/hosts.ini`:
+```ini
+[all:vars]
+ansible_user=pi
+
+[hotspots]
+animal-name-one ansible_host=192.168.1.10
+animal-name-two ansible_host=192.168.1.11
 ```
 
-### Host Variables (host_vars/hotspot.yml)
+### Adding a New Host
 
-Configure device-specific settings:
+1. Add host to `inventory/hosts.ini`:
+   ```ini
+   [hotspots]
+   my-hotspot-name ansible_host=192.168.1.20
+   ```
+
+2. Create `host_vars/my-hotspot-name.yml` with configuration:
+   ```yaml
+   target_hotspot_vendor: "rakv1"
+   target_miner_region: "EU868"
+   timezone: "Europe/Prague"
+   wifi_country: "CZ"
+   ```
+
+### Host Variables Reference
+
+Create `host_vars/{animal-name}.yml` for each host with these variables:
+
+**Required:**
 ```yaml
-target_hotspot_vendor: "rakv1"           # Options: cotx, pisces, rakv1, rakv2, sensecap
-target_miner_region: "EU868"             # EU868 or US915
-target_pf_concentrator_interface: "spi"  # spi or usb
-target_pf_concentrator_model: "sx1250"   # sx1250 (sx1302 concentrator)
+target_hotspot_vendor: "rakv1"    # Options: cotx, pisces, rakv1, rakv2, sensecap
+target_miner_region: "EU868"      # EU868 or US915
+```
 
-# Locales
+**Optional:**
+```yaml
+# Locales & Timezone (if not set, system settings remain unchanged)
 timezone: "Europe/Prague"
-wifi_country: "CZ"
-```
-
-### Image Versions (roles/miner/defaults/main.yml)
-
-Default image tags (override in host_vars if needed):
-```yaml
-target_miner_tag: "gateway-latest"
-target_pf_image: "ghcr.io/petrkr/sx1302_hal"
-target_pf_tag: "0.0.14"
-target_pf_concentrator_interface: "spi"  # or "usb"
-target_pf_concentrator_model: "sx1250"   # sx1250 only for now
-```
-
-### Raspberry Pi Configuration (roles/rpi/defaults/main.yml)
-
-Default Raspberry Pi settings:
-```yaml
-enable_spi: true
-enable_i2c: true
-enable_serial_hw: true
 locale: "en_US.UTF-8"
-xkblayout: "us"
+wifi_country: "CZ"
+
+# Raspberry Pi Hardware
+enable_spi: true                  # Default: true
+enable_i2c: true                  # Default: true
+enable_serial_hw: true            # Default: true
+
+# Packet Forwarder
+target_pf_concentrator_interface: "spi"           # Default: spi (or: usb)
+target_pf_concentrator_model: "sx1250"            # Default: sx1250
+target_pf_image: "ghcr.io/petrkr/sx1302_hal"      # Default: ghcr.io/petrkr/sx1302_hal
+target_pf_tag: "0.0.15"                           # Default: 0.0.15
+
+# Miner
+target_miner_tag: "gateway-latest"                # Default: gateway-latest
 ```
-
-Override in host_vars if needed (timezone, wifi_country, etc.).
-
-### Optional: Custom Packet Forwarder Config
-
-If you need a custom packet forwarder configuration file, define in host_vars:
-```yaml
-packet_forwarder_config_file_path: "/path/to/local_conf.json"
-```
-
-This file will be copied to `/home/pi/pf/local_conf.json` on the target device.
 
 ## Deployment
 
-Run the playbook to deploy everything:
+Deploy all hotspots:
 ```bash
-ansible-playbook -i hosts.yml rpi.yml
+ansible-playbook hotspots.yml
 ```
 
-This will execute two roles in order:
+Deploy a specific hotspot:
+```bash
+ansible-playbook hotspots.yml --limit animal-name
+```
 
-### Role: `rpi`
-1. Upgrade system packages (`apt upgrade dist`)
-2. Install basic utilities:
-   - `vim`, `mc`, `bat` - editors and file managers
-   - `i2c-tools` - I2C device debugging
-   - `jq`, `bc` - JSON and math processors
-   - `ca-certificates`, `locales-all`
-3. Install container engine:
-   - `podman` - container runtime
-   - `podman-compose` - compose utility (legacy, not used by current setup)
-4. Configure Raspberry Pi:
-   - Enable SPI and I2C via `raspi-config`
-   - Set timezone, locale, wifi country
-   - Configure keyboard layout
-
-### Role: `miner`
-1. Add `miner` hostname to `/etc/hosts` (127.0.2.1)
-2. Create directories (`/home/pi/miner_scripts`, `/home/pi/pf`)
-3. Deploy systemd service units to `/etc/systemd/system/`
-4. Create env files in `/etc/default/`
-5. Enable and start services
-6. Copy packet forwarder config (if `packet_forwarder_config_file_path` is defined)
+The playbook runs two roles:
+- **rpi** - Prepares Raspberry Pi (system packages, Podman, hardware config)
+- **miner** - Deploys packet forwarder and miner services
 
 ## Service Management
 
@@ -184,19 +164,6 @@ podman logs -f pf
 podman logs -f miner
 ```
 
-## Configuration Files
-
-After deployment, configuration is stored in:
-
-- `/etc/default/helium-packet-forwarder` - Packet forwarder env vars
-- `/etc/default/helium-miner` - Miner env vars
-- `/etc/systemd/system/helium-packet-forwarder.service` - Packet forwarder systemd unit
-- `/lib/systemd/system/helium-miner.service` - Miner systemd unit
-- `/home/pi/pf/` - Packet forwarder config directory (for custom local_conf.json)
-- `/home/pi/miner_scripts/` - Utility scripts (free_space.sh)
-
-You can edit env files and restart services to apply changes.
-
 ## Troubleshooting
 
 ### Services won't start
@@ -211,7 +178,7 @@ journalctl -xeu helium-miner
 
 Manually pull images:
 ```bash
-podman pull ghcr.io/petrkr/sx1302_hal:0.0.14
+podman pull ghcr.io/petrkr/sx1302_hal:0.0.15
 podman pull quay.io/team-helium/miner:gateway-latest
 ```
 
@@ -234,47 +201,8 @@ Check I2C and SPI devices are accessible:
 ls -l /dev/spidev* /dev/i2c* /dev/gpiomem
 ```
 
-Ensure the `pi` user has proper permissions (handled by ansible).
+## Configuration Files on Target
 
-## Architecture Details
-
-### Network Mode
-
-Both containers use `--network=host` which means:
-- No bridge network overhead
-- Direct access to host ports
-- Services bind to `127.0.2.1` (loopback alias) for security
-- Packet forwarder sends to `127.0.2.1:1680` (miner listen address)
-
-### Device Mappings
-
-**Packet Forwarder:**
-- `/dev/spidev0.0`, `/dev/spidev0.1` - SPI for LoRa concentrator
-- `/dev/gpiomem` - GPIO access for concentrator control
-- Runs with `--privileged` and `SYS_RAWIO` capability
-
-**Miner:**
-- Host device mapped to `/dev/i2c-ecc` inside container
-  - `/dev/i2c-1:/dev/i2c-ecc` for most vendors (rakv1, rakv2, cotx, sensecap)
-  - `/dev/i2c-0:/dev/i2c-ecc` for Pisces vendor
-- Uses `ecc://i2c-ecc` keypair URI
-- Runs with `SYS_RAWIO` capability
-
-### Environment Variables
-
-Configuration is split between:
-
-**`/etc/default/helium-packet-forwarder`:**
-- `VENDOR`, `REGION`, `CONCENTRATOR_INTERFACE`, `CONCENTRATOR_MODEL`
-- `IMAGE` - container image with tag
-
-**`/etc/default/helium-miner`:**
-- `REGION_OVERRIDE`, `GW_REGION`
-- `IMAGE` - container image with tag
-- `DEVICE_I2C` - host I2C device path (vendor-specific)
-
-Hardcoded in systemd units (not configurable via env):
-- `GW_KEYPAIR=ecc://i2c-ecc`
-- `GW_LISTEN=127.0.2.1:1680`
-- `GW_API=127.0.2.1:4467`
-- `GW_LOG_TIMESTAMP=false`
+After deployment, configuration is stored in:
+- `/etc/default/helium-packet-forwarder` - Packet forwarder environment variables
+- `/etc/default/helium-miner` - Miner environment variables
