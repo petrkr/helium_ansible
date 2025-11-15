@@ -3,7 +3,3 @@
 enable_spi: True
 enable_i2c: True
 enable_serial_hw: True
-
-# Locales & Timezone
-locale: "en_US.UTF-8"
-xkblayout: "us"
