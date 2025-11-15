@@ -11,6 +11,7 @@ RestartSec=10
 LimitNOFILE=64000
 EnvironmentFile=/etc/default/helium-miner
 ExecStart=/usr/bin/podman run --rm --name miner \
+  --stop-signal SIGINT \
   --network=host \
   -e REGION_OVERRIDE=${REGION_OVERRIDE} \
   -e GW_REGION=${GW_REGION} \
