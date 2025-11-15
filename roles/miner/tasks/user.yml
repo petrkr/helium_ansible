@@ -1,0 +1,17 @@
+---
+- name: Check if miner user exists
+  command: id miner
+  register: user_check
+  failed_when: false
+  changed_when: false
+
+- name: Create miner user with useradd -F
+  command: useradd -r -s /bin/false -d /opt/miner -m -G spi,i2c,gpio -F miner
+  when: user_check.rc != 0
+
+- name: Lock miner user password
+  command: passwd -l miner
+  when: user_check.rc != 0
+
+- name: Enable lingering for miner user
+  command: loginctl enable-linger miner

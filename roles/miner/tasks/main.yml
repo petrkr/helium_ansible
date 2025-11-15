@@ -1,5 +1,8 @@
 - name: Hosts configuration
   import_tasks: hosts.yml
 
+- name: User configuration
+  import_tasks: user.yml
+
 - name: Systemd services
   import_tasks: systemd-services.yml
