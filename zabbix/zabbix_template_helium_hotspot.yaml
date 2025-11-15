@@ -1,0 +1,118 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: 846977d1dfed4968bc5f8bdb363285bc
+      name: 'Templates/IoT'
+  templates:
+    - uuid: 59081cee1d314f9894d5220af39b7679
+      template: 'Helium Hotspot'
+      name: 'Helium Hotspot'
+      description: |
+        Template for monitoring Helium Hotspot services (miner and packet forwarder) via systemd.
+
+        Requirements:
+        - Zabbix Agent 2
+        - systemd
+
+        Monitored services:
+        - helium-miner
+        - helium-packet-forwarder
+      groups:
+        - name: 'Templates/IoT'
+      items:
+        - uuid: 4d898a6007dc40bc8d44dae8bbfac6c9
+          name: 'Helium Miner: Service state'
+          type: ZABBIX_ACTIVE
+          key: 'systemd.unit.info[helium-miner.service,ActiveState]'
+          delay: 1m
+          history: 7d
+          trends: 90d
+          value_type: CHAR
+          description: 'State of helium-miner systemd service'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  if (value === 'active') {
+                    return '1';
+                  } else if (value === 'failed') {
+                    return '2';
+                  } else {
+                    return '0';
+                  }
+          tags:
+            - tag: component
+              value: helium
+            - tag: service
+              value: miner
+          triggers:
+            - uuid: 3db7f38643da4d87bde9676ba5c436a6
+              expression: 'last(/Helium Hotspot/systemd.unit.info[helium-miner.service,ActiveState])<>1'
+              name: 'Helium Miner: Service is not running'
+              priority: HIGH
+              description: 'Helium miner service is not in active state'
+              tags:
+                - tag: scope
+                  value: availability
+        - uuid: 265dbd47241440dd81caff30e9fe58cf
+          name: 'Helium Packet Forwarder: Service state'
+          type: ZABBIX_ACTIVE
+          key: 'systemd.unit.info[helium-packet-forwarder.service,ActiveState]'
+          delay: 1m
+          history: 7d
+          trends: 90d
+          value_type: CHAR
+          description: 'State of helium-packet-forwarder systemd service'
+          preprocessing:
+            - type: JAVASCRIPT
+              parameters:
+                - |
+                  if (value === 'active') {
+                    return '1';
+                  } else if (value === 'failed') {
+                    return '2';
+                  } else {
+                    return '0';
+                  }
+          tags:
+            - tag: component
+              value: helium
+            - tag: service
+              value: packet-forwarder
+          triggers:
+            - uuid: 5b81e472fd4346089745462fbd1e798d
+              expression: 'last(/Helium Hotspot/systemd.unit.info[helium-packet-forwarder.service,ActiveState])<>1'
+              name: 'Helium Packet Forwarder: Service is not running'
+              priority: HIGH
+              description: 'Helium packet forwarder service is not in active state'
+              tags:
+                - tag: scope
+                  value: availability
+        - uuid: 6bbdab05e425427c93cc42a4e27582b8
+          name: 'Helium Miner: Uptime'
+          type: ZABBIX_ACTIVE
+          key: 'systemd.unit.info[helium-miner.service,ActiveEnterTimestamp]'
+          delay: 5m
+          history: 7d
+          trends: 90d
+          units: unixtime
+          description: 'Time when helium-miner service entered active state'
+          tags:
+            - tag: component
+              value: helium
+            - tag: service
+              value: miner
+        - uuid: de7b0919146e48c7a299d838d0701440
+          name: 'Helium Packet Forwarder: Uptime'
+          type: ZABBIX_ACTIVE
+          key: 'systemd.unit.info[helium-packet-forwarder.service,ActiveEnterTimestamp]'
+          delay: 5m
+          history: 7d
+          trends: 90d
+          units: unixtime
+          description: 'Time when helium-packet-forwarder service entered active state'
+          tags:
+            - tag: component
+              value: helium
+            - tag: service
+              value: packet-forwarder
