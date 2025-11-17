@@ -2,7 +2,6 @@
 Description=Helium Miner Gateway
 After=network-online.target helium-packet-forwarder.service
 Wants=network-online.target
-Requires=helium-packet-forwarder.service
 
 [Service]
 Type=simple
