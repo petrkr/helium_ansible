@@ -91,9 +91,9 @@ locale: "en_US.UTF-8"
 wifi_country: "CZ"
 
 # Raspberry Pi Hardware
-enable_spi: true                  # Default: true
-enable_i2c: true                  # Default: true
-enable_serial_hw: true            # Default: true
+enable_spi: true                                  # Default: true
+enable_i2c: true                                  # Default: true
+enable_serial_hw: true                            # Default: true
 
 # Packet Forwarder
 target_pf_concentrator_interface: "spi"           # Default: spi (or: usb)
