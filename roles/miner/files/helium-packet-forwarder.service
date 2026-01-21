@@ -8,6 +8,7 @@ Type=simple
 Restart=always
 RestartSec=10
 EnvironmentFile=/etc/default/helium-packet-forwarder
+ExecStartPre=/usr/bin/podman rm -f pf
 ExecStart=/usr/bin/podman run --rm --name pf \
   --network=host \
   -e VENDOR=${VENDOR} \
@@ -21,6 +22,7 @@ ExecStart=/usr/bin/podman run --rm --name pf \
   --privileged \
   ${IMAGE}
 ExecStop=/usr/bin/podman stop -t 10 pf
+ExecStopPost=/usr/bin/podman rm -f pf
 
 [Install]
 WantedBy=multi-user.target

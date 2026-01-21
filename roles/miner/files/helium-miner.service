@@ -9,6 +9,7 @@ Restart=always
 RestartSec=10
 LimitNOFILE=64000
 EnvironmentFile=/etc/default/helium-miner
+ExecStartPre=/usr/bin/podman rm -f miner
 ExecStart=/usr/bin/podman run --rm --name miner \
   --stop-signal SIGINT \
   --network=host \
@@ -21,6 +22,7 @@ ExecStart=/usr/bin/podman run --rm --name miner \
   --device ${DEVICE_I2C}:/dev/i2c-ecc \
   ${IMAGE}
 ExecStop=/usr/bin/podman stop -t 10 miner
+ExecStopPost=/usr/bin/podman rm -f miner
 
 [Install]
 WantedBy=multi-user.target
